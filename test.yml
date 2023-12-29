@@ -1,0 +1,12 @@
+---
+- hosts: all
+  tasks:
+    - name: Testing andrewrothstein.xet
+      ansible.builtin.include_role:
+        name: '{{ playbook_dir }}'
+    - name: Executing git-xet --version
+      ansible.builtin.command: git-xet --version
+      register: xet_test_output
+    - name: Output for 'git-xet --version'
+      ansible.builtin.debug:
+        msg: '{{ xet_test_output.stdout }}'

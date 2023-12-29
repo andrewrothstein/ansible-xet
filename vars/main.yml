@@ -1,0 +1,17 @@
+---
+# vars file for xet
+xet_os: '{{ ansible_system | lower }}'
+xet_arch: '{{ ansible_architecture }}'
+xet_platform: '{{ xet_os }}-{{ xet_arch }}'
+xet_tmp_archive: |-
+  {{- xet_tmp_dir | default("/tmp") -}}
+  /xet-{{ xet_platform }}.{{ xet_archive_type | default("tar.gz") -}}
+
+xet_checksum: '{{ xet_checksums[xet_ver][xet_platform] }}'
+xet_url: |-
+  {{- xet_mirror }}/v{{ xet_ver -}}
+  /xet-{{ xet_platform }}.{{ xet_archive_type | default("tar.gz") -}}
+
+xet_install_dir: '{{ xet_parent_install_dir }}/xet-{{ xet_platform }}'
+xet_exe: '{{ xet_install_dir }}/git-xet'
+xet_link: '{{ xet_parent_install_dir }}/bin/git-xet'

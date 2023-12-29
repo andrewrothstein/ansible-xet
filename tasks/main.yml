@@ -1,0 +1,57 @@
+---
+- name: Install unarchivedeps
+  ansible.builtin.include_role:
+    name: andrewrothstein.unarchivedeps
+- name: Resolve platform specific vars
+  ansible.builtin.include_vars: '{{ item }}'
+  with_first_found:
+    - files:
+        - '{{ ansible_distribution }}-{{ ansible_distribution_release }}.yml'
+        - '{{ ansible_distribution }}.yml'
+        - '{{ ansible_os_family }}.yml'
+      skip: true
+      paths:
+        - '{{ role_path }}/vars'
+- name: Look for install at {{ xet_exe }}
+  ansible.builtin.stat:
+    path: '{{ xet_exe }}'
+  register: xet_binary
+- when: not xet_binary.stat.exists
+  block:
+    - name: Downloading {{ xet_url }} to {{ xet_tmp_archive }}
+      become: true
+      become_user: root
+      ansible.builtin.get_url:
+        url: '{{ xet_url }}'
+        dest: '{{ xet_tmp_archive }}'
+        mode: '644'
+        checksum: '{{ xet_checksum }}'
+    - name: Mkdir {{ xet_install_dir }}
+      become: true
+      become_user: root
+      ansible.builtin.file:
+        path: '{{ xet_install_dir }}'
+        state: directory
+    - name: Unarchive {{ xet_tmp_archive }} to {{ xet_install_dir }}
+      become: true
+      become_user: root
+      ansible.builtin.unarchive:
+        remote_src: true
+        src: '{{ xet_tmp_archive }}'
+        dest: '{{ xet_install_dir }}'
+        creates: '{{ xet_exe }}'
+  always:
+    - name: Rm {{ xet_tmp_archive }}
+      become: true
+      become_user: root
+      ansible.builtin.file:
+        path: '{{ xet_tmp_archive }}'
+        state: absent
+- name: Linking {{ xet_link }} to {{ xet_exe }}
+  become: true
+  become_user: root
+  ansible.builtin.file:
+    src: '{{ xet_exe }}'
+    dest: '{{ xet_link }}'
+    state: link
+
