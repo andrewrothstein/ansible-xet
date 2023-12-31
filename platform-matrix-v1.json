@@ -1,17 +1,5 @@
 [
   {
-    "OS": "alpine",
-    "OS_VER": "3.18"
-  },
-  {
-    "OS": "alpine",
-    "OS_VER": "3.19"
-  },
-  {
-    "OS": "alpine",
-    "OS_VER": "edge"
-  },
-  {
     "OS": "archlinux",
     "OS_VER": "latest"
   },
@@ -38,10 +26,6 @@
   {
     "OS": "rockylinux",
     "OS_VER": "9"
-  },
-  {
-    "OS": "ubuntu",
-    "OS_VER": "focal"
   },
   {
     "OS": "ubuntu",
